@@ -17,12 +17,17 @@
 package guru.sfg.brewery.bootstrap;
 
 import guru.sfg.brewery.domain.*;
+import guru.sfg.brewery.domain.security.Authority;
+import guru.sfg.brewery.domain.security.User;
 import guru.sfg.brewery.repositories.*;
+import guru.sfg.brewery.repositories.security.UserRepository;
 import guru.sfg.brewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -39,6 +44,11 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     public static final String BEER_2_UPC = "0631234300019";
     public static final String BEER_3_UPC = "0083783375213";
 
+    public static final String ADMINPASS = "fc22215a-d660-4ecc-82de-8828cd7a6d19";
+    public static final String USERPASS = "cfa1a7b7-d3fb-4c3d-acb5-c46e5fcf376e";
+    public static  final String CUSTOMERPASS = "fe37b268-88f7-4814-8ad9-c58c807386da";
+
+    private final UserRepository userRepository;
     private final BreweryRepository breweryRepository;
     private final BeerRepository beerRepository;
     private final BeerInventoryRepository beerInventoryRepository;
@@ -49,6 +59,27 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     public void run(String... args) {
         loadBreweryData();
         loadCustomerData();
+        loadUserData();
+    }
+
+    private void loadUserData(){
+        Authority authority = new Authority(1, "ADMIN", null);
+        Authority authority2 = new Authority(21,"USER", null);
+        User admin = new User(1, "ADMIN", ADMINPASS,
+                new HashSet<>(Collections.singleton(authority)),
+                true,
+                true,
+                true,
+                true);
+        User user = new User(21, "USER", USERPASS,
+                new HashSet<>(Collections.singleton(authority2)),
+                true,
+                true,
+                true,
+                true);
+
+        userRepository.save(admin);
+        userRepository.save(user);
     }
 
     private void loadCustomerData() {

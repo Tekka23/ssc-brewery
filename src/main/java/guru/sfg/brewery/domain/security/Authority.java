@@ -18,8 +18,8 @@ public class Authority {
     @SequenceGenerator(name = "authority_seq", sequenceName = "authority_seq", allocationSize = 20)
     private Integer id;
 
+    private String permission;
 
-    private String role;
-    @ManyToMany(mappedBy = "authorities")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "roles")
+    private Set<Role> roles;
 }
